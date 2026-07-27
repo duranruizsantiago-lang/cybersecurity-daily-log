@@ -1,0 +1,35 @@
+name: Daily Cybersecurity Journal
+
+on:
+  schedule:
+    # Runs every day at 06:00 UTC (08:00 Madrid)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allows manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Configure Git
+        run: |
+          git config user.email "duranruizsantiago@gmail.com"
+          git config user.name "Santiago Durán Ruiz"
+
+      - name: Generate daily journal
+        run: python3 generate.py
